@@ -1,17 +1,16 @@
 html {
   box-sizing: border-box;
 }
-
-*, *:before, *:after {
+*,
+*:before,
+*:after {
   box-sizing: inherit;
 }
-
 body {
   margin: 0;
   padding: 0;
   border: 0;
 }
-
 body {
   display: flex;
   flex-direction: column;
@@ -22,28 +21,23 @@ body {
   padding: 40px 20px;
   background: #fafafa;
 }
-
 .weather {
   width: 90%;
   min-height: 400px;
   border-radius: 25px;
-  box-shadow: 0 0 2px 1px #ddd,
-  0 0 4px 2px #ddd,
-  0 0 6px 3px #ddd;
+  box-shadow: 0 0 2px 1px #ddd, 0 0 4px 2px #ddd, 0 0 6px 3px #ddd;
   overflow: hidden;
 }
-
-.header{
+.header {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   height: 100px;
   padding: 20px;
-  background:#5372F0;
+  background: #5372F0;
 }
-
-.header-title{
+.header-title {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -53,8 +47,6 @@ body {
   font-weight: bold;
   font-family: Arial, Helvetica, sans-serif;
 }
-
-
 .footer {
   position: fixed;
   bottom: 20px;
@@ -62,3 +54,4 @@ body {
   transform: translateX(-50%);
   color: #999;
 }
+/*# sourceMappingURL=index.css.map */
