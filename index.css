@@ -76,9 +76,11 @@ body {
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
+  gap: 20px;
   padding: 20px 40px;
 }
-.local-search {
+.local-search,
+.local-current {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
@@ -110,6 +112,37 @@ body {
   height: 40px;
   border-radius: 20px;
   background-color: hsla(0, 0%, 100%, 0.3);
+}
+.local-current {
+  justify-content: center;
+  cursor: pointer;
+}
+.local-current:hover {
+  background: hsla(240, 50%, 80%, 0.3);
+}
+.local-recent {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 100%;
+}
+.local-recent-title {
+  color: #999;
+  font-weight: bold;
+}
+.local-recent-list {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  height: auto;
+  white-space: wrap;
+}
+.local-recent-list-void {
+  justify-self: center;
+  color: #666;
 }
 .footer {
   position: fixed;

@@ -41,11 +41,27 @@ localSearchConfirmDom.addEventListener("click", (e) => {
     console.log(moreTryWeb(getWeatherData));
 })
 
+// 获取当前位置
+const localCurrentDom = document.querySelector(".local-current");
+localCurrentDom.addEventListener("click", async (e) => {
+    let p;
+    await new Promise((resolve) => {
+        navigator.geolocation.getCurrentPosition((position) => {
+            p = position.coords;
+            resolve();
+        })
+    });
+    console.log(p);
+    const city = await moreTryWeb(getCurrentCity,[p]);
+    console.log(city);
+    searchContent = city[0].name;
+})
 
-const moreTryWeb = async (webFn) => {
+
+const moreTryWeb = async (webFn,fnArgs) => {
     for (let i = 0; i < 3; i++) {
         try {
-            return await webFn();
+            return await webFn(...fnArgs);
         } catch (err) {
             if (i === 2) {
                 console.error(err);
@@ -57,11 +73,19 @@ const moreTryWeb = async (webFn) => {
 }
 
 
-
 const getWeatherData = async () => {
     const getWeatherDataUrl = new URL("https://api.openweathermap.org/data/2.5/weather");
     getWeatherDataUrl.searchParams.set("q", searchContent);
     getWeatherDataUrl.searchParams.set("appid", "04e6eadefb196fce9bf51eb29f053749");
     getWeatherDataUrl.searchParams.set("units", "metric")
     return await fetch(getWeatherDataUrl).then(res => res.json());
+}
+
+const getCurrentCity = async (position) => {
+    const getCurrentCityUrl = new URL("https://api.openweathermap.org/geo/1.0/reverse");
+    getCurrentCityUrl.searchParams.set("lat",position.latitude);
+    getCurrentCityUrl.searchParams.set("lon",position.longitude);
+    getCurrentCityUrl.searchParams.set("appid", "04e6eadefb196fce9bf51eb29f053749");
+    getCurrentCityUrl.searchParams.set("limit",1);
+    return await fetch(getCurrentCityUrl).then(res => res.json());
 }
