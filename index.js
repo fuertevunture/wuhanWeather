@@ -30,12 +30,38 @@ localSearchInputDom.addEventListener("change", (e) => {
     searchContent = e.target.value;
 })
 
-localSearchInputDom.addEventListener("input", (e) => {}
+localSearchInputDom.addEventListener("input", (e) => {
+    }
 )
 
 const localSearchConfirmDom = document.querySelector(".local-search-confirm");
 
 localSearchConfirmDom.addEventListener("click", (e) => {
-
+    console.log(searchContent);
+    console.log(moreTryWeb(getWeatherData));
 })
 
+
+const moreTryWeb = async (webFn) => {
+    for (let i = 0; i < 3; i++) {
+        try {
+            return await webFn();
+        } catch (err) {
+            if (i === 2) {
+                console.error(err);
+                throw err;
+            }
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+    }
+}
+
+
+
+const getWeatherData = async () => {
+    const getWeatherDataUrl = new URL("https://api.openweathermap.org/data/2.5/weather");
+    getWeatherDataUrl.searchParams.set("q", searchContent);
+    getWeatherDataUrl.searchParams.set("appid", "04e6eadefb196fce9bf51eb29f053749");
+    getWeatherDataUrl.searchParams.set("units", "metric")
+    return await fetch(getWeatherDataUrl).then(res => res.json());
+}
