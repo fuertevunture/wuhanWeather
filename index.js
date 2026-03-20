@@ -52,6 +52,8 @@ function saveRecentList() {
     localStorage.setItem('recentList', JSON.stringify(recentListProxy));
 }
 
+let todayData = {};
+
 
 //主题样式按钮的切换
 const headerThemeModeDomList = Array.from(document.querySelectorAll(".header-theme-mode"));
@@ -91,7 +93,7 @@ localSearchInputDom.addEventListener("input", (e) => {
 
 const localSearchConfirmDom = document.querySelector(".local-search-confirm");
 localSearchConfirmDom.addEventListener("click", (e) => {
-    moreTryWeb(getWeatherData, []);
+    getTodayWeather();
 })
 
 // 获取当前位置
@@ -159,7 +161,7 @@ localRecentListDom.addEventListener("click", (e) => {
             recentListProxy.unshift(text);
         }
         searchContentProxy.value = text;
-        moreTryWeb(getWeatherData, []);
+        getTodayWeather();
     }
     if (e.target.classList.contains("local-recent-list-item-del")) {
         recentListProxy.splice(idx, 1);
@@ -173,6 +175,42 @@ localRecentListDom.addEventListener("click", (e) => {
  *  3.增加历史记录
  */
 
+
+
+async function getTodayWeather() {
+    loadingDom.style.display = "flex";
+    todayData = await moreTryWeb(getWeatherData, []);
+    await new Promise((resolve) => {setTimeout(resolve, 1000)});
+    loadingDom.style.display = "none";
+    renderToday();
+}
+
+const loadingDom = document.querySelector(".loading");
+const todayDom = document.querySelector(".today");
+
+const todayBaseInfoGeoDom = document.querySelector(".today-base-info-geo");
+const todayBaseInfoDateDom = document.querySelector(".today-base-info-date");
+const todayTempExactStatisticDom = document.querySelector(".today-temp-exact-statistic");
+const todayTempExactDescriptionDom = document.querySelector(".today-temp-exact-description");
+const todayTempHumanDom = document.querySelector(".today-temp-human");
+const todayPhysicWindInfoValueDom = document.querySelector(".today-physic-wind-info-value");
+const todayPhysicHumidityInfoValueDom = document.querySelector(".today-physic-humidity-info-value");
+const todayPhysicPressureInfoValueDom = document.querySelector(".today-physic-pressure-info-value");
+const todayPhysicVisibilityInfoValueDom = document.querySelector(".today-physic-visibility-info-value");
+
+function renderToday(){
+
+    todayBaseInfoGeoDom.textContent = todayData.name;
+    todayTempExactStatisticDom.textContent = todayData.main.temp + "℃";
+    todayTempExactDescriptionDom.textContent = todayData.weather[0].description;
+    todayTempHumanDom.textContent = "Feels like:" + todayData.main.feels_like;
+    todayPhysicWindInfoValueDom.textContent = todayData.wind.speed;
+    todayPhysicHumidityInfoValueDom.textContent = todayData.main.humidity;
+    todayPhysicPressureInfoValueDom.textContent = todayData.main.pressure;
+    todayPhysicVisibilityInfoValueDom.textContent = todayData.visibility;
+
+    todayDom.style.display = "block";
+}
 
 //网络数据获取
 const moreTryWeb = async (webFn, fnArgs) => {
@@ -195,7 +233,7 @@ const getWeatherData = async () => {
     getWeatherDataUrl.searchParams.set("q", searchContent.value);
     getWeatherDataUrl.searchParams.set("appid", "04e6eadefb196fce9bf51eb29f053749");
     getWeatherDataUrl.searchParams.set("units", "metric")
-    return await fetch(getWeatherDataUrl).then(res => res.json());
+    return  await fetch(getWeatherDataUrl).then(res => res.json());
 }
 
 const getCurrentCity = async (position) => {
