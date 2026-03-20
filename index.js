@@ -13,6 +13,10 @@ const searchContentProxy = new Proxy(searchContent, {
         Reflect.set(target, key, value);
         renderLocalSearchInput();
         return true;
+    },
+    deleteProperty(target, p) {
+        Reflect.delete(target, p);
+        return true;
     }
 })
 
@@ -25,10 +29,12 @@ const recentListProxy = new Proxy(recentList, {
     set(target, key, value) {
         Reflect.set(target, key, value);
         renderLocalRecentList();
+        saveRecentList();
         return true;
     }
 })
 
+// 初始化时获取持久化值
 window.addEventListener('DOMContentLoaded', () => {
     // 全量更新数组的方式
     let localRecentList = JSON.parse(localStorage.getItem('recentList')) || [];
@@ -36,6 +42,15 @@ window.addEventListener('DOMContentLoaded', () => {
         recentListProxy.push(recent);
     }
 })
+// 按固定频率更新持久化值
+// setInterval(() => {
+//     localStorage.setItem('recentList', JSON.stringify(recentListProxy));
+// },10000);
+
+// 将持久化触发放到代理中
+function saveRecentList() {
+    localStorage.setItem('recentList', JSON.stringify(recentListProxy));
+}
 
 
 //主题样式按钮的切换
@@ -78,7 +93,7 @@ const localSearchConfirmDom = document.querySelector(".local-search-confirm");
 
 localSearchConfirmDom.addEventListener("click", (e) => {
     console.log(searchContent);
-    console.log(moreTryWeb(getWeatherData));
+    console.log(moreTryWeb(getWeatherData,[]));
 })
 
 // 获取当前位置
@@ -114,15 +129,44 @@ function renderLocalRecentList() {
             const div = document.createElement("div");
             div.classList.add("local-recent-list-item");
             div.textContent = recent;
+            const delDiv = document.createElement("div");
+            delDiv.classList.add("local-recent-list-item-del");
+            delDiv.textContent = "X";
+            div.appendChild(delDiv);
             localRecentListFrag.appendChild(div);
         })
         localRecentListDom.appendChild(localRecentListFrag)
     }
 }
 
-function addRecentItem(item){
+function addRecentItem(item) {
     recentListProxy.push(item);
 }
+
+const localRecentListItemDomList = Array.from(document.querySelectorAll(".local-recent-list-item"));
+
+// 对历史记录们进行事件委托处理
+localRecentListDom.addEventListener("click", (e) => {
+    const item = e.target.closest(".local-recent-list-item");
+    let text;
+    for(const node of item.childNodes){
+        if (node.nodeType === Node.TEXT_NODE) {
+            text = node.textContent;
+        }
+    }
+    const idx = recentList.indexOf(text);
+    if (item) {
+        if (idx !== -1) {
+            recentListProxy.splice(idx, 1);
+            recentListProxy.unshift(text);
+        }
+        searchContentProxy.value = text;
+        moreTryWeb(getWeatherData,[]);
+    }
+    if (e.target.classList.contains("local-recent-list-item-del")) {
+        recentListProxy.splice(idx, 1);
+    }
+})
 
 /**
  * 每次执行一次查询，都包括：
@@ -150,7 +194,7 @@ const moreTryWeb = async (webFn, fnArgs) => {
 
 const getWeatherData = async () => {
     const getWeatherDataUrl = new URL("https://api.openweathermap.org/data/2.5/weather");
-    getWeatherDataUrl.searchParams.set("q", searchContent);
+    getWeatherDataUrl.searchParams.set("q", searchContent.value);
     getWeatherDataUrl.searchParams.set("appid", "04e6eadefb196fce9bf51eb29f053749");
     getWeatherDataUrl.searchParams.set("units", "metric")
     return await fetch(getWeatherDataUrl).then(res => res.json());

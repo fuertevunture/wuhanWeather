@@ -168,15 +168,44 @@ body {
 }
 
 .local-recent-list-item{
+  position: relative;
   display: inline-block;
   width: auto;
   padding: 5px 10px;
+  margin: 5px 10px;
   border-radius: 999px;
   border: 1px solid #ddd;
   color: #555;
   font-weight: 500;
   background: #efefef;
   cursor: pointer;
+}
+
+
+.local-recent-list-item-del{
+  display: none;
+
+  position: absolute;
+  top: -7px;
+  right: -7px;
+  justify-content: center;
+  align-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  background: hsla(60, 80%, 0.5,0.7);
+  color: #555;
+  font-size: 12px;
+}
+
+.local-recent-list-item:hover .local-recent-list-item-del{
+  display: flex;
+}
+
+
+.local-recent-list-item-del:hover{
+  background: hsla(0, 0.8, 0.5, 0.8);
+  color: #fff;
 }
 
 .local-recent-list-item:hover{
