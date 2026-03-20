@@ -1,5 +1,41 @@
 // 数据
-let searchContent = '';
+
+// 只要是要呈现到页面的数据，都要进行代理处理
+const searchContent = {
+    value: '',
+}
+
+const searchContentProxy = new Proxy(searchContent, {
+    get(target, key) {
+        return Reflect.get(...arguments);
+    },
+    set(target, key, value) {
+        Reflect.set(target, key, value);
+        renderLocalSearchInput();
+        return true;
+    }
+})
+
+const recentList = [];
+
+const recentListProxy = new Proxy(recentList, {
+    get(target, key) {
+        return Reflect.get(...arguments);
+    },
+    set(target, key, value) {
+        Reflect.set(target, key, value);
+        renderLocalRecentList();
+        return true;
+    }
+})
+
+window.addEventListener('DOMContentLoaded', () => {
+    // 全量更新数组的方式
+    let localRecentList = JSON.parse(localStorage.getItem('recentList')) || [];
+    for (let recent of localRecentList) {
+        recentListProxy.push(recent);
+    }
+})
 
 
 //主题样式按钮的切换
@@ -27,8 +63,12 @@ localSearchInputDom.addEventListener("blur", (e) => {
 })
 
 localSearchInputDom.addEventListener("change", (e) => {
-    searchContent = e.target.value;
+    searchContentProxy.value = e.target.value;
 })
+
+function renderLocalSearchInput() {
+    localSearchInputDom.value = searchContentProxy.value;
+}
 
 localSearchInputDom.addEventListener("input", (e) => {
     }
@@ -52,13 +92,48 @@ localCurrentDom.addEventListener("click", async (e) => {
         })
     });
     console.log(p);
-    const city = await moreTryWeb(getCurrentCity,[p]);
+    const city = await moreTryWeb(getCurrentCity, [p]);
     console.log(city);
-    searchContent = city[0].name;
+    searchContentProxy.value = city[0].name;
+    addRecentItem(searchContentProxy.value);
 })
 
+const localRecentDom = document.querySelector(".local-recent");
+const localRecentListDom = document.querySelector(".local-recent-list");
 
-const moreTryWeb = async (webFn,fnArgs) => {
+function renderLocalRecentList() {
+    localRecentListDom.innerHTML = '';
+    if (recentList.length === 0) {
+        const div = document.createElement("div");
+        div.className = "local-recent-list-void";
+        div.textContent = "no history";
+        localRecentListDom.appendChild(div);
+    } else {
+        const localRecentListFrag = document.createDocumentFragment();
+        recentList.forEach(recent => {
+            const div = document.createElement("div");
+            div.classList.add("local-recent-list-item");
+            div.textContent = recent;
+            localRecentListFrag.appendChild(div);
+        })
+        localRecentListDom.appendChild(localRecentListFrag)
+    }
+}
+
+function addRecentItem(item){
+    recentListProxy.push(item);
+}
+
+/**
+ * 每次执行一次查询，都包括：
+ *  1.网络获取
+ *  2.天气数据渲染
+ *  3.增加历史记录
+ */
+
+
+//网络数据获取
+const moreTryWeb = async (webFn, fnArgs) => {
     for (let i = 0; i < 3; i++) {
         try {
             return await webFn(...fnArgs);
@@ -83,9 +158,9 @@ const getWeatherData = async () => {
 
 const getCurrentCity = async (position) => {
     const getCurrentCityUrl = new URL("https://api.openweathermap.org/geo/1.0/reverse");
-    getCurrentCityUrl.searchParams.set("lat",position.latitude);
-    getCurrentCityUrl.searchParams.set("lon",position.longitude);
+    getCurrentCityUrl.searchParams.set("lat", position.latitude);
+    getCurrentCityUrl.searchParams.set("lon", position.longitude);
     getCurrentCityUrl.searchParams.set("appid", "04e6eadefb196fce9bf51eb29f053749");
-    getCurrentCityUrl.searchParams.set("limit",1);
+    getCurrentCityUrl.searchParams.set("limit", 1);
     return await fetch(getCurrentCityUrl).then(res => res.json());
 }
