@@ -86,14 +86,12 @@ function renderLocalSearchInput() {
 }
 
 localSearchInputDom.addEventListener("input", (e) => {
-    }
-)
+    moreTryWeb(getWeatherData, []);
+})
 
 const localSearchConfirmDom = document.querySelector(".local-search-confirm");
-
 localSearchConfirmDom.addEventListener("click", (e) => {
-    console.log(searchContent);
-    console.log(moreTryWeb(getWeatherData,[]));
+    moreTryWeb(getWeatherData, []);
 })
 
 // 获取当前位置
@@ -149,7 +147,7 @@ const localRecentListItemDomList = Array.from(document.querySelectorAll(".local-
 localRecentListDom.addEventListener("click", (e) => {
     const item = e.target.closest(".local-recent-list-item");
     let text;
-    for(const node of item.childNodes){
+    for (const node of item.childNodes) {
         if (node.nodeType === Node.TEXT_NODE) {
             text = node.textContent;
         }
@@ -161,7 +159,7 @@ localRecentListDom.addEventListener("click", (e) => {
             recentListProxy.unshift(text);
         }
         searchContentProxy.value = text;
-        moreTryWeb(getWeatherData,[]);
+        moreTryWeb(getWeatherData, []);
     }
     if (e.target.classList.contains("local-recent-list-item-del")) {
         recentListProxy.splice(idx, 1);

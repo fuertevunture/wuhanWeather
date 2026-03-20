@@ -10,8 +10,10 @@ body {
   margin: 0;
   padding: 0;
   border: 0;
+  --text-color: white;
 }
 body {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -20,10 +22,12 @@ body {
   height: 100%;
   padding: 40px 20px;
   background: #fafafa;
+  scrollbar-width: none;
 }
 .weather {
   width: 90%;
   min-height: 400px;
+  height: auto;
   border-radius: 25px;
   box-shadow: 0 0 2px 1px #ddd, 0 0 4px 2px #ddd, 0 0 6px 3px #ddd;
   overflow: hidden;
@@ -181,9 +185,87 @@ body {
 .local-recent-list-item:hover {
   background: #ddd;
 }
+.today {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 30px;
+  width: auto;
+  margin: 20px 40px;
+  min-height: 340px;
+  padding: 10px 25px;
+  border-radius: 18px;
+  background: hsla(260, 80%, 80%, 0.6);
+  color: var(--text-color);
+}
+.today-base {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+}
+.today-base-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+.today-base-info-geo {
+  font-size: 36px;
+  font-weight: bold;
+}
+.today-base-logo {
+  align-self: center;
+}
+.today-temp {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-end;
+  width: 100%;
+}
+.today-temp-exact {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+.today-temp-exact-statistic {
+  font-size: 80px;
+  font-weight: bold;
+}
+.today-physic {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+}
+.today-physic-wind,
+.today-physic-humidity,
+.today-physic-pressure,
+.today-physic-visibility {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 200px;
+  height: 150px;
+}
+.today-physic-wind-info,
+.today-physic-humidity-info,
+.today-physic-pressure-info,
+.today-physic-visibility-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 16px;
+}
 .footer {
-  position: fixed;
-  bottom: 20px;
+  position: absolute;
+  bottom: 10px;
   left: 50%;
   transform: translateX(-50%);
   color: #999;
