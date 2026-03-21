@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap');
+
 html {
   box-sizing: border-box;
 }
@@ -5,6 +7,18 @@ html {
 *, *:before, *:after {
   box-sizing: inherit;
 }
+
+:root{
+  /* Weather Theme Colors */
+  --sunny-gradient: linear-gradient(135deg, #FF8C39, #F56036);
+  --cloudy-gradient: linear-gradient(135deg, #7A8EAA, #5A6882);
+  --rainy-gradient: linear-gradient(135deg, #4B79A1, #283E51);
+  --snowy-gradient: linear-gradient(135deg, #9CBBDE, #6D8EB8);
+  --thunderstorm-gradient: linear-gradient(135deg, #485563, #29323C);
+  --default-gradient: linear-gradient(135deg, #5372F0, #3A57D2);
+}
+
+
 
 body {
   margin: 0;
@@ -357,6 +371,10 @@ body {
   font-size: 16px;
 }
 
+.today-physic-wind-info-value,.today-physic-humidity-info-value,.today-physic-pressure-info-value,.today-physic-visibility-info-value{
+  font-weight: bold;
+  font-size: 22px;
+}
 
 
 
@@ -366,4 +384,25 @@ body {
   left: 50%;
   transform: translateX(-50%);
   color: #999;
+}
+
+/* Weather theme modifiers */
+.weather-theme-clear {
+  background: var(--sunny-gradient);
+}
+
+.weather-theme-clouds {
+  background: var(--cloudy-gradient);
+}
+
+.weather-theme-rain {
+  background: var(--rainy-gradient);
+}
+
+.weather-theme-snow {
+  background: var(--snowy-gradient);
+}
+
+.weather-theme-thunderstorm {
+  background: var(--thunderstorm-gradient);
 }
